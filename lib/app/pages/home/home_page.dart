@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:rnkr/app/data/models/category_model.dart';
+import 'package:rnkr/app/data/models/ranking_model.dart';
+import 'package:rnkr/main.dart';
 
 import '../../global/constants.dart';
 
@@ -10,6 +13,17 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  dynamic items;
+
+  getItems() async {
+    items = await db.collection('rankings').get();
+    print(items);
+  }
+
+  setItem(Map<String, dynamic> data) async {
+    await db.collection('rankings').doc('0').set(data);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,8 +34,8 @@ class _HomePageState extends State<HomePage> {
           child: Flex(
             direction: Axis.vertical,
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              Expanded(
+            children: [
+              const Expanded(
                 flex: 1,
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: defaultPadding),
@@ -30,6 +44,22 @@ class _HomePageState extends State<HomePage> {
                     style: TextStyle(
                       fontSize: 36.0,
                       fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                flex: 11,
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: defaultPadding),
+                  child: Center(
+                    // Temporary
+                    child: TextButton(
+                      child: const Text('Check items'),
+                      onPressed: () {
+                        getItems();
+                      },
                     ),
                   ),
                 ),
@@ -73,7 +103,17 @@ class _HomePageState extends State<HomePage> {
             size: 30.0,
           ),
         ),
-        onPressed: () {},
+        onPressed: () {
+          // Temporary
+          RankingModel ranking = RankingModel(
+            name: 'Brasileirão',
+            // TODO: Implement CategoryModel list to use here
+            items: [],
+            ranks: [],
+          );
+          setItem(ranking.toJson());
+          print('Registered');
+        },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );

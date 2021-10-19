@@ -41,7 +41,7 @@ class RankingCard extends StatelessWidget {
                       gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
-                        colors: ranking.category.colors,
+                        colors: ranking.category!.colors,
                       ),
                       border: const Border(
                         right: BorderSide(
@@ -52,7 +52,7 @@ class RankingCard extends StatelessWidget {
                     ),
                     child: Center(
                       child: Icon(
-                        ranking.category.icon,
+                        ranking.category!.icon,
                         size: 90,
                         color: Colors.white,
                       ),
