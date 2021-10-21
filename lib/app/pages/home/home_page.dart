@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:rnkr/app/data/categories.dart';
 import 'package:rnkr/app/data/models/category_model.dart';
 import 'package:rnkr/app/data/models/ranking_model.dart';
 import 'package:rnkr/main.dart';
@@ -13,109 +16,127 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  dynamic items;
-
-  getItems() async {
-    items = await db.collection('rankings').get();
-    print(items);
-  }
-
-  setItem(Map<String, dynamic> data) async {
-    await db.collection('rankings').doc('0').set(data);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[200],
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.only(top: defaultPadding),
+          padding: const EdgeInsets.only(top: 0.0),
           child: Flex(
             direction: Axis.vertical,
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Expanded(
+              Expanded(
                 flex: 1,
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: defaultPadding),
-                  child: Text(
-                    'Rankings',
-                    style: TextStyle(
-                      fontSize: 36.0,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: (defaultPadding / 2),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        // ranking.name,
+                        'Ranking',
+                        style: TextStyle(
+                          fontSize: 22.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          GestureDetector(
+                            child: const Icon(
+                              Icons.edit,
+                              size: 30.0,
+                            ),
+                            onTap: () {},
+                          ),
+                          const SizedBox(width: (defaultPadding / 2)),
+                          GestureDetector(
+                            child: const Icon(
+                              Icons.camera_alt_outlined,
+                              size: 30.0,
+                            ),
+                            onTap: () {},
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
               ),
               Expanded(
-                flex: 11,
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: defaultPadding),
-                  child: Center(
-                    // Temporary
-                    child: TextButton(
-                      child: const Text('Check items'),
-                      onPressed: () {
-                        getItems();
-                      },
+                flex: 12,
+                child: Flex(
+                  direction: Axis.horizontal,
+                  children: [
+                    Expanded(
+                      flex: 10,
+                      child: Container(
+                        margin: const EdgeInsets.only(
+                          right: (defaultPadding / 2),
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[200],
+                          borderRadius: const BorderRadius.only(
+                            topRight: Radius.circular(30.0),
+                          ),
+                          boxShadow: const [
+                            BoxShadow(
+                              blurRadius: 4.0,
+                              offset: Offset(2.0, 2.0),
+                              color: Colors.grey,
+                            ),
+                          ],
+                        ),
+                        child: ClipRRect(
+                          borderRadius: const BorderRadius.only(
+                            topRight: Radius.circular(30.0),
+                          ),
+                          child: ListView(
+                            // TODO: Implement list of selected items here
+                            children: const [],
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
+                    Expanded(
+                      flex: 4,
+                      child: Container(
+                        margin: const EdgeInsets.only(
+                          left: (defaultPadding / 2),
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[400],
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(30.0),
+                          ),
+                          boxShadow: const [
+                            BoxShadow(
+                              blurRadius: 4.0,
+                              offset: Offset(-2.0, 2.0),
+                              color: Colors.grey,
+                            ),
+                          ],
+                        ),
+                        child: ClipRRect(
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(30.0),
+                          ),
+                          child: ListView(
+                            // TODO: Implement list of available items here
+                            children: const [],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
           ),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        iconSize: 30.0,
-        selectedFontSize: 22.0,
-        selectedItemColor: Colors.teal,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Início',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Configs',
-          ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Container(
-          height: 60.0,
-          width: 60.0,
-          decoration: const BoxDecoration(
-            shape: BoxShape.circle,
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Color(0xFF00FFF0),
-                Color(0xFF009F96),
-              ],
-            ),
-          ),
-          child: const Icon(
-            Icons.add,
-            size: 30.0,
-          ),
-        ),
-        onPressed: () {
-          // Temporary
-          RankingModel ranking = RankingModel(
-            name: 'Brasileirão',
-            // TODO: Implement CategoryModel list to use here
-            items: [],
-            ranks: [],
-          );
-          setItem(ranking.toJson());
-          print('Registered');
-        },
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }
