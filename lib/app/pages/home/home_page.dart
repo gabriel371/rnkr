@@ -1,10 +1,11 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:rnkr/app/data/categories.dart';
-import 'package:rnkr/app/data/models/category_model.dart';
+import 'package:rnkr/app/data/models/item_model.dart';
+import 'package:rnkr/app/data/models/rank_model.dart';
 import 'package:rnkr/app/data/models/ranking_model.dart';
-import 'package:rnkr/main.dart';
+import 'package:rnkr/app/pages/home/widgets/add_item_button.dart';
+import 'package:rnkr/app/pages/home/widgets/add_rank_button.dart';
+import 'package:rnkr/app/pages/home/widgets/item.dart';
+import 'package:rnkr/app/pages/home/widgets/rank.dart';
 
 import '../../global/constants.dart';
 
@@ -16,6 +17,25 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  // Just a temporary example
+  RankingModel ranking = RankingModel(
+    name: 'New Ranking',
+    ranks: [
+      RankModel(
+        name: 'Rank 1',
+        color: const Color(0xFF51EE00),
+        position: 0,
+        items: [],
+      ),
+    ],
+    items: [
+      ItemModel(
+        name: 'Item 1',
+        repeatable: false,
+      ),
+    ],
+  );
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,10 +54,9 @@ class _HomePageState extends State<HomePage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
-                        // ranking.name,
-                        'Ranking',
-                        style: TextStyle(
+                      Text(
+                        ranking.name,
+                        style: const TextStyle(
                           fontSize: 22.0,
                           fontWeight: FontWeight.bold,
                         ),
@@ -94,8 +113,13 @@ class _HomePageState extends State<HomePage> {
                             topRight: Radius.circular(30.0),
                           ),
                           child: ListView(
-                            // TODO: Implement list of selected items here
-                            children: const [],
+                            // TODO: Turn this area into a draggable item target
+                            children: [
+                              ...ranking.ranks!
+                                  .map((rank) => Rank(rank: rank))
+                                  .toList(),
+                              const AddRankButton(),
+                            ],
                           ),
                         ),
                       ),
@@ -124,8 +148,13 @@ class _HomePageState extends State<HomePage> {
                             topLeft: Radius.circular(30.0),
                           ),
                           child: ListView(
-                            // TODO: Implement list of available items here
-                            children: const [],
+                            // TODO: Turn these items into draggables
+                            children: [
+                              ...ranking.items!
+                                  .map((item) => Item(item: item))
+                                  .toList(),
+                              const AddItemButton(),
+                            ],
                           ),
                         ),
                       ),

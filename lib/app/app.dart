@@ -11,7 +11,7 @@ class App extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'rnkr',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.green,
       ),
       home: const HomePage(),
     );
