@@ -6,7 +6,7 @@ import '../../../global/constants.dart';
 import 'item.dart';
 
 class Rank extends StatelessWidget {
-  final RankModel? rank;
+  final RankModel rank;
 
   const Rank({Key? key, required this.rank}) : super(key: key);
 
@@ -29,7 +29,7 @@ class Rank extends StatelessWidget {
             flex: 2,
             child: Container(
               decoration: BoxDecoration(
-                color: rank!.color,
+                color: rank.color,
                 border: const Border(
                   right: BorderSide(
                     width: 1.0,
@@ -38,7 +38,7 @@ class Rank extends StatelessWidget {
                 ),
               ),
               child: Center(
-                child: Text(rank!.name),
+                child: Text(rank.name),
               ),
             ),
           ),
@@ -49,19 +49,22 @@ class Rank extends StatelessWidget {
                 return ListView.builder(
                   padding: const EdgeInsets.only(top: (defaultPadding / 2)),
                   scrollDirection: Axis.horizontal,
-                  itemCount: rank!.items?.length,
+                  itemCount: rank.items?.length,
                   itemBuilder: (context, i) {
                     return Item(
                       size: 60.0,
-                      item: rank!.items?[i],
+                      item: rank.items?[i],
                     );
                   },
                 );
               },
+              onLeave: (item) => rank.items?.remove(item),
               onWillAccept: (_) => true,
               onAccept: (ItemModel item) {
                 print(item.name);
-                rank!.items?.add(item);
+                if (!rank.items!.contains(item)) {
+                  rank.items?.add(item);
+                }
               },
             ),
           ),
