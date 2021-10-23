@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../data/models/item_model.dart';
 import '../../data/models/rank_model.dart';
@@ -21,45 +22,21 @@ class _HomePageState extends State<HomePage> {
     name: 'New Ranking',
     ranks: [],
     items: [
-      ItemModel(
-        name: 'Item 1',
-        repeatable: false,
-      ),
-      ItemModel(
-        name: 'Item 2',
-        repeatable: false,
-      ),
-      ItemModel(
-        name: 'Item 3',
-        repeatable: false,
-      ),
-      ItemModel(
-        name: 'Item 4',
-        repeatable: false,
-      ),
-      ItemModel(
-        name: 'Item 5',
-        repeatable: false,
-      ),
-      ItemModel(
-        name: 'Item 6',
-        repeatable: false,
-      ),
-      ItemModel(
-        name: 'Item 7',
-        repeatable: false,
-      ),
-      ItemModel(
-        name: 'Item 8',
-        repeatable: false,
-      ),
+      ItemModel(name: 'Item 1'),
+      ItemModel(name: 'Item 2'),
+      ItemModel(name: 'Item 3'),
+      ItemModel(name: 'Item 4'),
+      ItemModel(name: 'Item 5'),
+      ItemModel(name: 'Item 6'),
+      ItemModel(name: 'Item 7'),
+      ItemModel(name: 'Item 8'),
     ],
   );
 
   final _rankNameController = TextEditingController();
+  final ImagePicker _picker = ImagePicker();
 
   Color pickerColor = const Color(0xFF00FF00);
-  Color currentColor = const Color(0xFF00FF00);
 
   void _changeColor(Color color) {
     setState(() => pickerColor = color);
@@ -228,6 +205,58 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  _showEditRankDialog(BuildContext context, RankModel rank) {
+    final _editRankNameController = TextEditingController(text: rank.name);
+    Color rankColor = rank.color;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Edit ' + rank.name),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ColorPicker(
+                pickerColor: rankColor,
+                onColorChanged: _changeColor,
+                paletteType: PaletteType.rgb,
+                pickerAreaHeightPercent: 0.0,
+                enableAlpha: false,
+                showLabel: false,
+                portraitOnly: true,
+              ),
+              TextFormField(
+                controller: _editRankNameController,
+                decoration: const InputDecoration(
+                  label: Text('Name'),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            ElevatedButton(
+              child: const Text('Ok'),
+              onPressed: () {
+                setState(() {
+                  rank.color = pickerColor;
+                  rank.name = _editRankNameController.text;
+                });
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -321,7 +350,7 @@ class _HomePageState extends State<HomePage> {
                                   (rank) => GestureDetector(
                                     key: ValueKey(rank),
                                     onDoubleTap: () {
-                                      // TODO: Implement logic to edit rank
+                                      _showEditRankDialog(context, rank);
                                     },
                                     child: Rank(
                                       key: ValueKey(rank),
