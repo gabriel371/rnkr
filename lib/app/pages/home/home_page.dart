@@ -19,7 +19,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   // Just a temporary example
   RankingModel ranking = RankingModel(
-    name: 'New Ranking',
+    name: 'Double tap me to edit',
     ranks: [],
     items: [
       ItemModel(name: 'Item 1'),
@@ -113,30 +113,44 @@ class _HomePageState extends State<HomePage> {
                         children: [
                           Expanded(
                             flex: 8,
-                            child: TextFormField(
-                              controller: _rankNameController,
-                              decoration: const InputDecoration(
-                                label: Text('Name'),
-                              ),
-                            ),
+                            child: ValueListenableBuilder<TextEditingValue>(
+                                valueListenable: _rankNameController,
+                                builder: (context, value, _) {
+                                  return TextFormField(
+                                    controller: _rankNameController,
+                                    decoration: InputDecoration(
+                                      errorText: value.text.isEmpty
+                                          ? 'Must have at least one character!'
+                                          : null,
+                                      label: const Text('Name'),
+                                    ),
+                                  );
+                                }),
                           ),
                           Expanded(
                             flex: 2,
-                            child: TextButton(
-                              child: const Text('Add'),
-                              onPressed: () {
-                                setState(() {
-                                  ranking.ranks!.add(
-                                    RankModel(
-                                      color: pickerColor,
-                                      name: _rankNameController.text,
-                                      items: [],
-                                    ),
+                            child: ValueListenableBuilder<TextEditingValue>(
+                                valueListenable: _rankNameController,
+                                builder: (context, value, _) {
+                                  return TextButton(
+                                    child: const Text('Add'),
+                                    onPressed: value.text.isEmpty
+                                        ? null
+                                        : () {
+                                            setState(() {
+                                              ranking.ranks!.add(
+                                                RankModel(
+                                                  color: pickerColor,
+                                                  name:
+                                                      _rankNameController.text,
+                                                  items: [],
+                                                ),
+                                              );
+                                              _rankNameController.clear();
+                                            });
+                                          },
                                   );
-                                  _rankNameController.clear();
-                                });
-                              },
-                            ),
+                                }),
                           ),
                         ],
                       ),
@@ -205,6 +219,58 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  _showEditRankingNameDialog(BuildContext context, RankingModel ranking) {
+    final _editRankingNameController = TextEditingController(
+      text: ranking.name,
+    );
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: ValueListenableBuilder<TextEditingValue>(
+            valueListenable: _editRankingNameController,
+            builder: (context, value, _) {
+              return TextFormField(
+                controller: _editRankingNameController,
+                maxLength: 40,
+                decoration: InputDecoration(
+                  errorText:
+                      value.text.isEmpty ? 'Name should not stay empty!' : null,
+                  label: const Text('Ranking Name'),
+                ),
+              );
+            },
+          ),
+          actions: [
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            ValueListenableBuilder<TextEditingValue>(
+              valueListenable: _editRankingNameController,
+              builder: (context, value, _) {
+                return ElevatedButton(
+                  child: const Text('Ok'),
+                  onPressed: value.text.isEmpty
+                      ? null
+                      : () {
+                          setState(() {
+                            ranking.name = _editRankingNameController.text;
+                          });
+                          Navigator.pop(context);
+                        },
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   _showEditRankDialog(BuildContext context, RankModel rank) {
     final _editRankNameController = TextEditingController(text: rank.name);
     Color rankColor = rank.color;
@@ -226,12 +292,19 @@ class _HomePageState extends State<HomePage> {
                 showLabel: false,
                 portraitOnly: true,
               ),
-              TextFormField(
-                controller: _editRankNameController,
-                decoration: const InputDecoration(
-                  label: Text('Name'),
-                ),
-              ),
+              ValueListenableBuilder<TextEditingValue>(
+                  valueListenable: _editRankNameController,
+                  builder: (context, value, _) {
+                    return TextFormField(
+                      controller: _editRankNameController,
+                      decoration: InputDecoration(
+                        errorText: value.text.isEmpty
+                            ? 'Name should not stay empty!'
+                            : null,
+                        label: const Text('Name'),
+                      ),
+                    );
+                  }),
             ],
           ),
           actions: [
@@ -241,16 +314,37 @@ class _HomePageState extends State<HomePage> {
                 Navigator.pop(context);
               },
             ),
-            ElevatedButton(
-              child: const Text('Ok'),
+            TextButton(
+              child: const Text(
+                'Delete',
+                style: TextStyle(
+                  color: Colors.red,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               onPressed: () {
                 setState(() {
-                  rank.color = pickerColor;
-                  rank.name = _editRankNameController.text;
+                  ranking.ranks?.remove(rank);
                 });
                 Navigator.pop(context);
               },
             ),
+            ValueListenableBuilder<TextEditingValue>(
+                valueListenable: _editRankNameController,
+                builder: (context, value, _) {
+                  return ElevatedButton(
+                    child: const Text('Ok'),
+                    onPressed: value.text.isEmpty
+                        ? null
+                        : () {
+                            setState(() {
+                              rank.color = pickerColor;
+                              rank.name = _editRankNameController.text;
+                            });
+                            Navigator.pop(context);
+                          },
+                  );
+                }),
           ],
         );
       },
@@ -270,36 +364,55 @@ class _HomePageState extends State<HomePage> {
                 padding: const EdgeInsets.symmetric(
                   horizontal: (defaultPadding / 2),
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                child: Flex(
+                  direction: Axis.horizontal,
                   children: [
-                    Text(
-                      ranking.name,
-                      style: const TextStyle(
-                        fontSize: 22.0,
-                        fontWeight: FontWeight.bold,
+                    Expanded(
+                      flex: 15,
+                      child: GestureDetector(
+                        child: FittedBox(
+                          fit: BoxFit.fitWidth,
+                          child: Text(
+                            ranking.name,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 22.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        onDoubleTap: () {
+                          _showEditRankingNameDialog(context, ranking);
+                        },
                       ),
                     ),
-                    Row(
-                      children: [
-                        GestureDetector(
-                          child: const Icon(
-                            Icons.add,
-                            size: 40.0,
+                    const Expanded(
+                      flex: 1,
+                      child: SizedBox(),
+                    ),
+                    Expanded(
+                      flex: 6,
+                      child: Row(
+                        children: [
+                          GestureDetector(
+                            child: const Icon(
+                              Icons.add,
+                              size: 40.0,
+                            ),
+                            onTap: () {
+                              _showAddOptions(context);
+                            },
                           ),
-                          onTap: () {
-                            _showAddOptions(context);
-                          },
-                        ),
-                        const SizedBox(width: (defaultPadding / 2)),
-                        GestureDetector(
-                          child: const Icon(
-                            Icons.camera_alt_outlined,
-                            size: 40.0,
+                          const SizedBox(width: (defaultPadding / 1.5)),
+                          GestureDetector(
+                            child: const Icon(
+                              Icons.check,
+                              size: 40.0,
+                            ),
+                            onTap: () {},
                           ),
-                          onTap: () {},
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ],
                 ),
