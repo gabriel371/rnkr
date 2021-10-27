@@ -1,11 +1,13 @@
+import 'dart:io';
+
 class ItemModel {
   String name;
   String? photoUrl;
-  int? repetitions;
+  File? imageFile;
 
   ItemModel({
     required this.name,
     this.photoUrl,
-    this.repetitions,
+    this.imageFile,
   });
 }

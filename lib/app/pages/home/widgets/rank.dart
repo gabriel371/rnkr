@@ -52,8 +52,8 @@ class Rank extends StatelessWidget {
                   itemCount: rank.items?.length,
                   itemBuilder: (context, i) {
                     return Item(
-                      size: 60.0,
-                      item: rank.items?[i],
+                      size: 55.0,
+                      item: rank.items![i],
                     );
                   },
                 );

@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 import '../../data/models/item_model.dart';
 import '../../data/models/rank_model.dart';
@@ -22,27 +25,34 @@ class _HomePageState extends State<HomePage> {
     name: 'Double tap me to edit',
     ranks: [],
     items: [
-      ItemModel(name: 'Item 1'),
-      ItemModel(name: 'Item 2'),
-      ItemModel(name: 'Item 3'),
-      ItemModel(name: 'Item 4'),
-      ItemModel(name: 'Item 5'),
-      ItemModel(name: 'Item 6'),
-      ItemModel(name: 'Item 7'),
-      ItemModel(name: 'Item 8'),
+      ItemModel(
+        name: 'Vasco',
+        photoUrl: 'https://a.espncdn.com/i/teamlogos/soccer/500/3454.png',
+      ),
+      // ItemModel(name: 'Item 2'),
+      // ItemModel(name: 'Item 3'),
+      // ItemModel(name: 'Item 4'),
+      // ItemModel(name: 'Item 5'),
+      // ItemModel(name: 'Item 6'),
+      // ItemModel(name: 'Item 7'),
+      // ItemModel(name: 'Item 8'),
     ],
   );
 
   final _rankNameController = TextEditingController();
+  final _itemNameController = TextEditingController();
+  File? _imageFile;
   final ImagePicker _picker = ImagePicker();
 
   Color pickerColor = const Color(0xFF00FF00);
+
+  ValueNotifier<bool> isDialOpen = ValueNotifier(false);
 
   void _changeColor(Color color) {
     setState(() => pickerColor = color);
   }
 
-  _showAddOptions(BuildContext context) {
+  _showAddRankModal() {
     showModalBottomSheet(
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
@@ -114,50 +124,106 @@ class _HomePageState extends State<HomePage> {
                           Expanded(
                             flex: 8,
                             child: ValueListenableBuilder<TextEditingValue>(
-                                valueListenable: _rankNameController,
-                                builder: (context, value, _) {
-                                  return TextFormField(
-                                    controller: _rankNameController,
-                                    decoration: InputDecoration(
-                                      errorText: value.text.isEmpty
-                                          ? 'Must have at least one character!'
-                                          : null,
-                                      label: const Text('Name'),
-                                    ),
-                                  );
-                                }),
+                              valueListenable: _rankNameController,
+                              builder: (context, value, _) {
+                                return TextFormField(
+                                  controller: _rankNameController,
+                                  decoration: InputDecoration(
+                                    errorText: value.text.isEmpty
+                                        ? 'Must have at least one character!'
+                                        : null,
+                                    label: const Text('Name'),
+                                  ),
+                                );
+                              },
+                            ),
                           ),
                           Expanded(
                             flex: 2,
                             child: ValueListenableBuilder<TextEditingValue>(
-                                valueListenable: _rankNameController,
-                                builder: (context, value, _) {
-                                  return TextButton(
-                                    child: const Text('Add'),
-                                    onPressed: value.text.isEmpty
-                                        ? null
-                                        : () {
-                                            setState(() {
-                                              ranking.ranks!.add(
-                                                RankModel(
-                                                  color: pickerColor,
-                                                  name:
-                                                      _rankNameController.text,
-                                                  items: [],
-                                                ),
-                                              );
-                                              _rankNameController.clear();
-                                            });
-                                          },
-                                  );
-                                }),
+                              valueListenable: _rankNameController,
+                              builder: (context, value, _) {
+                                return TextButton(
+                                  child: const Text('Add'),
+                                  onPressed: value.text.isEmpty
+                                      ? null
+                                      : () {
+                                          setState(() {
+                                            ranking.ranks!.add(
+                                              RankModel(
+                                                color: pickerColor,
+                                                name: _rankNameController.text,
+                                                items: [],
+                                              ),
+                                            );
+                                            _rankNameController.clear();
+                                          });
+                                        },
+                                );
+                              },
+                            ),
                           ),
                         ],
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 20.0),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  _showAddItemModal() {
+    Future _getImage() async {
+      await _picker.pickImage(source: ImageSource.gallery).then((file) {
+        setState(() {
+          _imageFile = File(file!.path);
+        });
+      });
+    }
+
+    showModalBottomSheet(
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        side: BorderSide.none,
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(30.0),
+        ),
+      ),
+      context: context,
+      builder: (BuildContext context) {
+        return Padding(
+          padding: MediaQuery.of(context).viewInsets,
+          child: Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 15.0,
+            ),
+            height: 500.0,
+            decoration: BoxDecoration(
+              color: Colors.grey[400],
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(30.0),
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(
+                      vertical: 5.0,
+                    ),
+                    height: 5.0,
+                    width: 100.0,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[800],
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                  ),
+                ),
                 const Padding(
                   padding: EdgeInsets.symmetric(
                     vertical: 10.0,
@@ -179,22 +245,47 @@ class _HomePageState extends State<HomePage> {
                         children: [
                           Expanded(
                             flex: 3,
-                            child: Column(
-                              children: const [
-                                Icon(
-                                  Icons.photo,
-                                  size: 60.0,
-                                ),
-                                Text('Add Image'),
-                              ],
+                            child: GestureDetector(
+                              child: Column(
+                                children: const [
+                                  Icon(
+                                    Icons.photo,
+                                    size: 60.0,
+                                  ),
+                                  Text('Upload Image'),
+                                ],
+                              ),
+                              onTap: () {
+                                _getImage();
+                              },
                             ),
                           ),
                           Expanded(
                             flex: 7,
-                            child: TextFormField(
-                              decoration: const InputDecoration(
-                                label: Text('Name'),
-                              ),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                ValueListenableBuilder<TextEditingValue>(
+                                  valueListenable: _itemNameController,
+                                  builder: (context, value, _) {
+                                    return TextFormField(
+                                      controller: _itemNameController,
+                                      decoration: InputDecoration(
+                                        errorText: value.text.isEmpty
+                                            ? 'Must have at least one character!'
+                                            : null,
+                                        label: const Text('Item name'),
+                                      ),
+                                    );
+                                  },
+                                ),
+                                TextFormField(
+                                  enabled: (_imageFile == null),
+                                  decoration: const InputDecoration(
+                                    label: Text('Image URL'),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
@@ -202,9 +293,27 @@ class _HomePageState extends State<HomePage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          TextButton(
-                            onPressed: () {},
-                            child: const Text('Add'),
+                          ValueListenableBuilder<TextEditingValue>(
+                            valueListenable: _itemNameController,
+                            builder: (context, value, _) {
+                              return TextButton(
+                                child: const Text('Add'),
+                                onPressed: value.text.isEmpty
+                                    ? null
+                                    : () {
+                                        setState(() {
+                                          ranking.items!.add(
+                                            ItemModel(
+                                              name: _itemNameController.text,
+                                              imageFile: _imageFile,
+                                            ),
+                                          );
+                                          _imageFile = null;
+                                          _itemNameController.clear();
+                                        });
+                                      },
+                              );
+                            },
                           ),
                         ],
                       ),
@@ -235,9 +344,19 @@ class _HomePageState extends State<HomePage> {
                 controller: _editRankingNameController,
                 maxLength: 40,
                 decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.only(right: 20.0),
+                  suffixIcon: IconButton(
+                    iconSize: 25.0,
+                    icon: const Icon(Icons.close),
+                    onPressed: () {
+                      setState(() {
+                        _editRankingNameController.text = '';
+                      });
+                    },
+                  ),
                   errorText:
                       value.text.isEmpty ? 'Name should not stay empty!' : null,
-                  label: const Text('Ranking Name'),
+                  label: const Text('List Name'),
                 ),
               );
             },
@@ -371,7 +490,8 @@ class _HomePageState extends State<HomePage> {
                       flex: 15,
                       child: GestureDetector(
                         child: FittedBox(
-                          fit: BoxFit.fitWidth,
+                          alignment: Alignment.centerLeft,
+                          fit: BoxFit.contain,
                           child: Text(
                             ranking.name,
                             overflow: TextOverflow.ellipsis,
@@ -396,12 +516,10 @@ class _HomePageState extends State<HomePage> {
                         children: [
                           GestureDetector(
                             child: const Icon(
-                              Icons.add,
+                              Icons.help_outline,
                               size: 40.0,
                             ),
-                            onTap: () {
-                              _showAddOptions(context);
-                            },
+                            onTap: () {},
                           ),
                           const SizedBox(width: (defaultPadding / 1.5)),
                           GestureDetector(
@@ -506,12 +624,7 @@ class _HomePageState extends State<HomePage> {
                               children: [
                                 ...ranking.items!
                                     .map(
-                                      (item) => GestureDetector(
-                                        child: Item(item: item),
-                                        onDoubleTap: () {
-                                          // TODO: Implement logic to edit item
-                                        },
-                                      ),
+                                      (item) => Item(item: item),
                                     )
                                     .toList(),
                               ],
@@ -533,6 +646,28 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
+      floatingActionButton: SpeedDial(
+        icon: Icons.add,
+        overlayOpacity: 0.2,
+        openCloseDial: isDialOpen,
+        spaceBetweenChildren: 10.0,
+        switchLabelPosition: true,
+        children: [
+          SpeedDialChild(
+            child: const Icon(Icons.menu),
+            label: 'Add Rank',
+            backgroundColor: Colors.grey[350],
+            onTap: _showAddRankModal,
+          ),
+          SpeedDialChild(
+            child: const Icon(Icons.adjust),
+            label: 'Add Item',
+            backgroundColor: Colors.grey[350],
+            onTap: _showAddItemModal,
+          ),
+        ],
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.miniStartFloat,
     );
   }
 }
