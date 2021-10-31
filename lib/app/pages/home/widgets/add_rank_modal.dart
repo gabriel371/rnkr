@@ -3,19 +3,21 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:rnkr/app/data/models/rank_model.dart';
 import 'package:rnkr/app/data/models/ranking_model.dart';
 
-class NewRankModal extends StatefulWidget {
+class AddRankModal extends StatefulWidget {
   final RankingModel ranking;
-  const NewRankModal({
+  final ValueChanged<RankModel> update;
+  const AddRankModal({
     Key? key,
     required this.ranking,
+    required this.update,
   }) : super(key: key);
 
   @override
-  _NewRankModalState createState() => _NewRankModalState();
+  _AddRankModalState createState() => _AddRankModalState();
 }
 
-class _NewRankModalState extends State<NewRankModal> {
-  final _rankNameController = TextEditingController();
+class _AddRankModalState extends State<AddRankModal> {
+  final rankNameController = TextEditingController();
 
   Color pickerColor = const Color(0xFF00FF00);
 
@@ -28,10 +30,11 @@ class _NewRankModalState extends State<NewRankModal> {
     return Padding(
       padding: MediaQuery.of(context).viewInsets,
       child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 15.0,
+        padding: const EdgeInsets.only(
+          left: 15.0,
+          right: 15.0,
+          bottom: 15.0,
         ),
-        height: 500.0,
         decoration: BoxDecoration(
           color: Colors.grey[400],
           borderRadius: const BorderRadius.vertical(
@@ -39,6 +42,7 @@ class _NewRankModalState extends State<NewRankModal> {
           ),
         ),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Center(
@@ -79,6 +83,7 @@ class _NewRankModalState extends State<NewRankModal> {
                     showLabel: false,
                     portraitOnly: true,
                   ),
+                  // TODO: Implement switch to choose between light and dark title
                   Flex(
                     direction: Axis.horizontal,
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -86,10 +91,11 @@ class _NewRankModalState extends State<NewRankModal> {
                       Expanded(
                         flex: 8,
                         child: ValueListenableBuilder<TextEditingValue>(
-                          valueListenable: _rankNameController,
+                          valueListenable: rankNameController,
                           builder: (context, value, _) {
                             return TextFormField(
-                              controller: _rankNameController,
+                              autofocus: true,
+                              controller: rankNameController,
                               decoration: InputDecoration(
                                 errorText: value.text.isEmpty
                                     ? 'Must have at least one character!'
@@ -103,22 +109,22 @@ class _NewRankModalState extends State<NewRankModal> {
                       Expanded(
                         flex: 2,
                         child: ValueListenableBuilder<TextEditingValue>(
-                          valueListenable: _rankNameController,
+                          valueListenable: rankNameController,
                           builder: (context, value, _) {
                             return TextButton(
                               child: const Text('Add'),
                               onPressed: value.text.isEmpty
                                   ? null
                                   : () {
+                                      widget.update(
+                                        RankModel(
+                                          name: rankNameController.text,
+                                          color: pickerColor,
+                                          items: [],
+                                        ),
+                                      );
                                       setState(() {
-                                        widget.ranking.ranks!.add(
-                                          RankModel(
-                                            color: pickerColor,
-                                            name: _rankNameController.text,
-                                            items: [],
-                                          ),
-                                        );
-                                        _rankNameController.clear();
+                                        rankNameController.clear();
                                       });
                                     },
                             );

@@ -5,15 +5,20 @@ import 'package:image_picker/image_picker.dart';
 import 'package:rnkr/app/data/models/item_model.dart';
 import 'package:rnkr/app/data/models/ranking_model.dart';
 
-class NewItemModel extends StatefulWidget {
+class AddItemModal extends StatefulWidget {
   final RankingModel ranking;
-  const NewItemModel({Key? key, required this.ranking}) : super(key: key);
+  final ValueChanged<ItemModel> update;
+  const AddItemModal({
+    Key? key,
+    required this.ranking,
+    required this.update,
+  }) : super(key: key);
 
   @override
-  _NewItemModelState createState() => _NewItemModelState();
+  _AddItemModalState createState() => _AddItemModalState();
 }
 
-class _NewItemModelState extends State<NewItemModel> {
+class _AddItemModalState extends State<AddItemModal> {
   final _itemNameController = TextEditingController();
   File? _imageFile;
   final ImagePicker _picker = ImagePicker();
@@ -31,10 +36,11 @@ class _NewItemModelState extends State<NewItemModel> {
     return Padding(
       padding: MediaQuery.of(context).viewInsets,
       child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 15.0,
+        padding: const EdgeInsets.only(
+          left: 15.0,
+          right: 15.0,
+          bottom: 15.0,
         ),
-        height: 500.0,
         decoration: BoxDecoration(
           color: Colors.grey[400],
           borderRadius: const BorderRadius.vertical(
@@ -42,6 +48,7 @@ class _NewItemModelState extends State<NewItemModel> {
           ),
         ),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Center(
@@ -102,6 +109,7 @@ class _NewItemModelState extends State<NewItemModel> {
                               valueListenable: _itemNameController,
                               builder: (context, value, _) {
                                 return TextFormField(
+                                  autofocus: true,
                                   controller: _itemNameController,
                                   decoration: InputDecoration(
                                     errorText: value.text.isEmpty
@@ -134,13 +142,13 @@ class _NewItemModelState extends State<NewItemModel> {
                             onPressed: value.text.isEmpty
                                 ? null
                                 : () {
+                                    widget.update(
+                                      ItemModel(
+                                        name: _itemNameController.text,
+                                        imageFile: _imageFile,
+                                      ),
+                                    );
                                     setState(() {
-                                      widget.ranking.items!.add(
-                                        ItemModel(
-                                          name: _itemNameController.text,
-                                          imageFile: _imageFile,
-                                        ),
-                                      );
                                       _imageFile = null;
                                       _itemNameController.clear();
                                     });
