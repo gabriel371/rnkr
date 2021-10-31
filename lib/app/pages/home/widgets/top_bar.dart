@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:rnkr/app/data/models/ranking_model.dart';
-import 'package:rnkr/app/global/constants.dart';
 
+import '../../../data/models/ranking_model.dart';
+import '../../../global/constants.dart';
 import 'edit_ranking_name_dialog.dart';
 import 'help_dialog.dart';
 
@@ -57,9 +57,10 @@ class _TopBarState extends State<TopBar> {
                 child: Text(
                   widget.ranking.name,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 22.0,
                     fontWeight: FontWeight.bold,
+                    color: Theme.of(context).textTheme.headline1!.color,
                   ),
                 ),
               ),
@@ -77,9 +78,10 @@ class _TopBarState extends State<TopBar> {
             child: Row(
               children: [
                 GestureDetector(
-                  child: const Icon(
+                  child: Icon(
                     Icons.help_outline,
                     size: 40.0,
+                    color: Theme.of(context).iconTheme.color,
                   ),
                   onTap: () {
                     _showHelpDialog();
@@ -87,9 +89,10 @@ class _TopBarState extends State<TopBar> {
                 ),
                 const SizedBox(width: (defaultPadding / 1.5)),
                 GestureDetector(
-                  child: const Icon(
+                  child: Icon(
                     Icons.check,
                     size: 40.0,
+                    color: Theme.of(context).iconTheme.color,
                   ),
                   onTap: () {},
                 ),

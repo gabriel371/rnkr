@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:rnkr/app/data/models/rank_model.dart';
-import 'package:rnkr/app/data/models/ranking_model.dart';
+
+import '../../../data/models/rank_model.dart';
+import '../../../data/models/ranking_model.dart';
 
 class AddRankModal extends StatefulWidget {
   final RankingModel ranking;
@@ -36,7 +37,7 @@ class _AddRankModalState extends State<AddRankModal> {
           bottom: 15.0,
         ),
         decoration: BoxDecoration(
-          color: Colors.grey[400],
+          color: Theme.of(context).dialogBackgroundColor,
           borderRadius: const BorderRadius.vertical(
             top: Radius.circular(30.0),
           ),
@@ -53,7 +54,7 @@ class _AddRankModalState extends State<AddRankModal> {
                 height: 5.0,
                 width: 100.0,
                 decoration: BoxDecoration(
-                  color: Colors.grey[800],
+                  color: Colors.black,
                   borderRadius: BorderRadius.circular(15.0),
                 ),
               ),
@@ -73,17 +74,35 @@ class _AddRankModalState extends State<AddRankModal> {
             ),
             Form(
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ColorPicker(
-                    pickerColor: pickerColor,
-                    onColorChanged: _changeColor,
-                    paletteType: PaletteType.rgb,
-                    pickerAreaHeightPercent: 0.0,
-                    enableAlpha: false,
-                    showLabel: false,
-                    portraitOnly: true,
+                  Flex(
+                    direction: Axis.horizontal,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Expanded(
+                        flex: 2,
+                        child: Text(
+                          'Color',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 8,
+                        child: ColorPicker(
+                          pickerColor: pickerColor,
+                          onColorChanged: _changeColor,
+                          paletteType: PaletteType.rgb,
+                          pickerAreaHeightPercent: 0.0,
+                          enableAlpha: false,
+                          showLabel: false,
+                          portraitOnly: true,
+                        ),
+                      ),
+                    ],
                   ),
-                  // TODO: Implement switch to choose between light and dark title
                   Flex(
                     direction: Axis.horizontal,
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -94,9 +113,25 @@ class _AddRankModalState extends State<AddRankModal> {
                           valueListenable: rankNameController,
                           builder: (context, value, _) {
                             return TextFormField(
-                              autofocus: true,
+                              autofocus: false,
                               controller: rankNameController,
+                              style: TextStyle(
+                                color: Theme.of(context)
+                                    .textTheme
+                                    .bodyText1!
+                                    .color,
+                              ),
+                              textCapitalization: TextCapitalization.sentences,
                               decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                ),
+                                labelStyle: TextStyle(
+                                  color: Theme.of(context)
+                                      .textTheme
+                                      .bodyText1!
+                                      .color,
+                                ),
                                 errorText: value.text.isEmpty
                                     ? 'Must have at least one character!'
                                     : null,

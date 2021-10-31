@@ -80,9 +80,10 @@ class _RankState extends State<Rank> {
                   child: Text(
                     widget.rank.name,
                     style: TextStyle(
-                      color:
-                          widget.rank.lightTitle ? Colors.white : Colors.black,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).textTheme.headline2!.color,
                     ),
+                    textAlign: TextAlign.center,
                   ),
                 ),
               ),
@@ -91,16 +92,21 @@ class _RankState extends State<Rank> {
               flex: 4,
               child: DragTarget(
                 builder: (context, acceptData, rejectData) {
-                  return ListView.builder(
-                    padding: const EdgeInsets.only(top: (defaultPadding / 2)),
-                    scrollDirection: Axis.horizontal,
-                    itemCount: widget.rank.items?.length,
-                    itemBuilder: (context, i) {
-                      return Item(
-                        size: 55.0,
-                        item: widget.rank.items![i],
-                      );
-                    },
+                  return Container(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).canvasColor,
+                    ),
+                    child: ListView.builder(
+                      padding: const EdgeInsets.only(top: (defaultPadding / 2)),
+                      scrollDirection: Axis.horizontal,
+                      itemCount: widget.rank.items?.length,
+                      itemBuilder: (context, i) {
+                        return Item(
+                          size: 55.0,
+                          item: widget.rank.items![i],
+                        );
+                      },
+                    ),
                   );
                 },
                 onLeave: (item) => widget.rank.items?.remove(item),

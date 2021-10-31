@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
-import 'package:rnkr/app/data/models/rank_model.dart';
-import 'package:rnkr/app/data/models/ranking_model.dart';
+import '../../../data/models/rank_model.dart';
+import '../../../data/models/ranking_model.dart';
 
 class EditRankDialog extends StatefulWidget {
   final RankingModel ranking;
@@ -33,33 +33,68 @@ class _EditRankDialogState extends State<EditRankDialog> {
     );
 
     return AlertDialog(
-      title: Text('Edit ' + widget.rank.name),
+      title: Center(
+        child: Text(
+          'Edit ' + widget.rank.name,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).textTheme.headline1!.color,
+          ),
+        ),
+      ),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          ColorPicker(
-            pickerColor: rankColor,
-            onColorChanged: changeColor,
-            paletteType: PaletteType.rgb,
-            pickerAreaHeightPercent: 0.0,
-            enableAlpha: false,
-            showLabel: false,
-            portraitOnly: true,
-          ),
-          // TODO: Implement switch to choose between light and dark title
-          ValueListenableBuilder<TextEditingValue>(
-              valueListenable: editRankNameController,
-              builder: (_, value, __) {
-                return TextFormField(
-                  controller: editRankNameController,
-                  decoration: InputDecoration(
-                    errorText: value.text.isEmpty
-                        ? 'Name should not stay empty!'
-                        : null,
-                    label: const Text('Name'),
+          Flex(
+            direction: Axis.horizontal,
+            children: [
+              Expanded(
+                flex: 2,
+                child: Text(
+                  'Color',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).textTheme.bodyText1!.color,
                   ),
-                );
-              }),
+                ),
+              ),
+              Expanded(
+                flex: 8,
+                child: ColorPicker(
+                  pickerColor: rankColor,
+                  onColorChanged: changeColor,
+                  paletteType: PaletteType.rgb,
+                  pickerAreaHeightPercent: 0.0,
+                  enableAlpha: false,
+                  showLabel: false,
+                  portraitOnly: true,
+                ),
+              ),
+            ],
+          ),
+          ValueListenableBuilder<TextEditingValue>(
+            valueListenable: editRankNameController,
+            builder: (_, value, __) {
+              return TextFormField(
+                controller: editRankNameController,
+                style: TextStyle(
+                  color: Theme.of(context).textTheme.bodyText1!.color,
+                ),
+                textCapitalization: TextCapitalization.sentences,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                  ),
+                  labelStyle: TextStyle(
+                    color: Theme.of(context).textTheme.bodyText1!.color,
+                  ),
+                  errorText:
+                      value.text.isEmpty ? 'Name should not stay empty!' : null,
+                  label: const Text('Name'),
+                ),
+              );
+            },
+          ),
         ],
       ),
       actions: [
@@ -70,10 +105,10 @@ class _EditRankDialogState extends State<EditRankDialog> {
           },
         ),
         TextButton(
-          child: const Text(
+          child: Text(
             'Delete',
             style: TextStyle(
-              color: Colors.red,
+              color: Theme.of(context).errorColor,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -83,24 +118,25 @@ class _EditRankDialogState extends State<EditRankDialog> {
           },
         ),
         ValueListenableBuilder<TextEditingValue>(
-            valueListenable: editRankNameController,
-            builder: (_, value, __) {
-              return ElevatedButton(
-                child: const Text('Ok'),
-                onPressed: value.text.isEmpty
-                    ? null
-                    : () {
-                        widget.update(
-                          RankModel(
-                            name: editRankNameController.text,
-                            color: rankColor,
-                            items: widget.rank.items,
-                          ),
-                        );
-                        Navigator.pop(context);
-                      },
-              );
-            }),
+          valueListenable: editRankNameController,
+          builder: (_, value, __) {
+            return ElevatedButton(
+              child: const Text('Ok'),
+              onPressed: value.text.isEmpty
+                  ? null
+                  : () {
+                      widget.update(
+                        RankModel(
+                          name: editRankNameController.text,
+                          color: rankColor,
+                          items: widget.rank.items,
+                        ),
+                      );
+                      Navigator.pop(context);
+                    },
+            );
+          },
+        ),
       ],
     );
   }

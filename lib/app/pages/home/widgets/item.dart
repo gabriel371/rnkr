@@ -68,8 +68,8 @@ class Item extends StatelessWidget {
             Container(
               margin: const EdgeInsets.only(
                 top: defaultPadding,
-                left: (defaultPadding / 8),
-                right: (defaultPadding / 8),
+                left: (defaultPadding / 4),
+                right: (defaultPadding / 4),
                 bottom: (defaultPadding / 4),
               ),
               height: size,

@@ -26,6 +26,7 @@ class _HomePageState extends State<HomePage> {
 
   void _addItem(ItemModel item) => setState(() => ranking.items!.add(item));
   void _addRank(RankModel rank) => setState(() => ranking.ranks!.add(rank));
+
   void _clearRanks() {
     setState(() => ranking.ranks!.clear());
     Navigator.pop(context);
@@ -93,16 +94,17 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Flex(
           direction: Axis.vertical,
           children: [
             Expanded(
-              flex: 1,
+              flex: 2,
               child: TopBar(ranking: ranking),
             ),
             Expanded(
-              flex: 12,
+              flex: 20,
               child: Flex(
                 direction: Axis.horizontal,
                 children: [
@@ -121,36 +123,43 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       floatingActionButton: SpeedDial(
-        overlayColor: Colors.green,
-        icon: Icons.add,
+        overlayColor: Colors.white,
+        icon: Icons.edit,
         overlayOpacity: 0.2,
         openCloseDial: isDialOpen,
         spaceBetweenChildren: 10.0,
         switchLabelPosition: true,
         children: [
           SpeedDialChild(
-            child: const Icon(
+            child: Icon(
               Icons.close,
-              color: Colors.white,
+              color: Theme.of(context).iconTheme.color,
             ),
             label: 'Clear Content',
-            labelBackgroundColor: Colors.red,
-            labelStyle: const TextStyle(color: Colors.white),
-            backgroundColor: Colors.red,
+            labelBackgroundColor: Theme.of(context).errorColor,
+            backgroundColor: Theme.of(context).errorColor,
             onTap: () {
               _showClearContentDialog();
             },
           ),
           SpeedDialChild(
-            child: const Icon(Icons.menu),
+            child: Icon(
+              Icons.menu,
+              color: Theme.of(context).iconTheme.color,
+            ),
             label: 'Add Rank',
-            backgroundColor: Colors.grey[350],
+            labelBackgroundColor: Theme.of(context).backgroundColor,
+            backgroundColor: Theme.of(context).backgroundColor,
             onTap: _showAddRankModal,
           ),
           SpeedDialChild(
-            child: const Icon(Icons.adjust),
+            child: Icon(
+              Icons.adjust,
+              color: Theme.of(context).iconTheme.color,
+            ),
             label: 'Add Item',
-            backgroundColor: Colors.grey[350],
+            labelBackgroundColor: Theme.of(context).backgroundColor,
+            backgroundColor: Theme.of(context).backgroundColor,
             onTap: _showAddItemModal,
           ),
         ],

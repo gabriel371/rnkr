@@ -17,40 +17,61 @@ class ClearContentDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text(
-        'Warning!',
-        style: TextStyle(
-          fontWeight: FontWeight.bold,
+      title: Center(
+        child: Text(
+          'Warning!',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).textTheme.headline1!.color,
+          ),
         ),
       ),
-      content: const Text('This will erase all data!'),
+      content: Center(
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height / 4,
+          child: Text(
+            'This will erase all data!',
+            style: TextStyle(
+              color: Theme.of(context).textTheme.bodyText1!.color,
+            ),
+          ),
+        ),
+      ),
       actions: [
-        TextButton(
-          child: const Text(
-            'Clear Items!',
-            style: TextStyle(color: Colors.red),
+        Center(
+          child: TextButton(
+            child: Text(
+              'Clear Items!',
+              style: TextStyle(color: Theme.of(context).errorColor),
+            ),
+            onPressed: clearItems,
           ),
-          onPressed: clearItems,
         ),
-        TextButton(
-          child: const Text(
-            'Clear Ranks!',
-            style: TextStyle(color: Colors.red),
+        Center(
+          child: TextButton(
+            child: Text(
+              'Clear Ranks!',
+              style: TextStyle(color: Theme.of(context).errorColor),
+            ),
+            onPressed: clearRanks,
           ),
-          onPressed: clearRanks,
         ),
-        TextButton(
-          child: const Text(
-            'Clear All!',
-            style: TextStyle(color: Colors.red),
+        Center(
+          child: TextButton(
+            child: Text(
+              'Clear All!',
+              style: TextStyle(color: Theme.of(context).errorColor),
+            ),
+            onPressed: clearAll,
           ),
-          onPressed: clearAll,
         ),
-        ElevatedButton(
-          child: const Text('Cancel'),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+        Center(
+          child: ElevatedButton(
+            child: const Text('Cancel'),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
         ),
       ],
     );

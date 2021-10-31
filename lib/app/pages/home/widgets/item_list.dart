@@ -21,15 +21,15 @@ class _ItemListState extends State<ItemList> {
         left: (defaultPadding / 2),
       ),
       decoration: BoxDecoration(
-        color: Colors.grey[400],
+        color: Theme.of(context).backgroundColor,
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(30.0),
         ),
-        boxShadow: const [
+        boxShadow: [
           BoxShadow(
             blurRadius: 4.0,
-            offset: Offset(-2.0, 2.0),
-            color: Colors.grey,
+            offset: const Offset(-2.0, 2.0),
+            color: Theme.of(context).shadowColor,
           ),
         ],
       ),

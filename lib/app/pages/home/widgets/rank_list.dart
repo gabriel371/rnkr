@@ -25,15 +25,15 @@ class _RankListState extends State<RankList> {
         right: (defaultPadding / 2),
       ),
       decoration: BoxDecoration(
-        color: Colors.grey[200],
+        color: Theme.of(context).cardColor,
         borderRadius: const BorderRadius.only(
           topRight: Radius.circular(30.0),
         ),
-        boxShadow: const [
+        boxShadow: [
           BoxShadow(
             blurRadius: 4.0,
-            offset: Offset(2.0, 2.0),
-            color: Colors.grey,
+            offset: const Offset(2.0, 2.0),
+            color: Theme.of(context).shadowColor,
           ),
         ],
       ),

@@ -20,6 +20,7 @@ class AddItemModal extends StatefulWidget {
 
 class _AddItemModalState extends State<AddItemModal> {
   final _itemNameController = TextEditingController();
+  final _itemPhotoUrlController = TextEditingController();
   File? _imageFile;
   final ImagePicker _picker = ImagePicker();
 
@@ -42,7 +43,7 @@ class _AddItemModalState extends State<AddItemModal> {
           bottom: 15.0,
         ),
         decoration: BoxDecoration(
-          color: Colors.grey[400],
+          color: Theme.of(context).dialogBackgroundColor,
           borderRadius: const BorderRadius.vertical(
             top: Radius.circular(30.0),
           ),
@@ -59,7 +60,7 @@ class _AddItemModalState extends State<AddItemModal> {
                 height: 5.0,
                 width: 100.0,
                 decoration: BoxDecoration(
-                  color: Colors.grey[800],
+                  color: Colors.black,
                   borderRadius: BorderRadius.circular(15.0),
                 ),
               ),
@@ -109,9 +110,25 @@ class _AddItemModalState extends State<AddItemModal> {
                               valueListenable: _itemNameController,
                               builder: (context, value, _) {
                                 return TextFormField(
-                                  autofocus: true,
+                                  autofocus: false,
                                   controller: _itemNameController,
+                                  style: TextStyle(
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .bodyText1!
+                                        .color,
+                                  ),
+                                  textCapitalization: TextCapitalization.words,
                                   decoration: InputDecoration(
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(15.0),
+                                    ),
+                                    labelStyle: TextStyle(
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .bodyText1!
+                                          .color,
+                                    ),
                                     errorText: value.text.isEmpty
                                         ? 'Must have at least one character!'
                                         : null,
@@ -120,10 +137,27 @@ class _AddItemModalState extends State<AddItemModal> {
                                 );
                               },
                             ),
+                            const SizedBox(height: 10.0),
                             TextFormField(
+                              controller: _itemPhotoUrlController,
                               enabled: (_imageFile == null),
-                              decoration: const InputDecoration(
-                                label: Text('Image URL'),
+                              style: TextStyle(
+                                color: Theme.of(context)
+                                    .textTheme
+                                    .bodyText1!
+                                    .color,
+                              ),
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                ),
+                                labelStyle: TextStyle(
+                                  color: Theme.of(context)
+                                      .textTheme
+                                      .bodyText1!
+                                      .color,
+                                ),
+                                label: const Text('Image URL'),
                               ),
                             ),
                           ],
@@ -146,6 +180,9 @@ class _AddItemModalState extends State<AddItemModal> {
                                       ItemModel(
                                         name: _itemNameController.text,
                                         imageFile: _imageFile,
+                                        photoUrl: _imageFile == null
+                                            ? _itemPhotoUrlController.text
+                                            : null,
                                       ),
                                     );
                                     setState(() {
