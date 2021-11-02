@@ -42,9 +42,7 @@ class _ItemListState extends State<ItemList> {
             return ListView(
               children: [
                 ...widget.ranking.items!
-                    .map(
-                      (item) => Item(item: item),
-                    )
+                    .map((item) => Item(item: item))
                     .toList(),
               ],
             );

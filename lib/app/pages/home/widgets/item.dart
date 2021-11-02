@@ -62,14 +62,14 @@ class Item extends StatelessWidget {
         ),
       ),
       child: SizedBox(
-        width: size * 1.5,
+        width: size * 1.2,
         child: Column(
           children: [
             Container(
               margin: const EdgeInsets.only(
                 top: defaultPadding,
-                left: (defaultPadding / 4),
-                right: (defaultPadding / 4),
+                left: (defaultPadding / 8),
+                right: (defaultPadding / 8),
                 bottom: (defaultPadding / 4),
               ),
               height: size,

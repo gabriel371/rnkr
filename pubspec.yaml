@@ -39,6 +39,8 @@ dependencies:
   image_picker:
   screenshot:
   animate_icons:
+  google_fonts:
+  path_provider:
 
 dev_dependencies:
   flutter_test:

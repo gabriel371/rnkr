@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'pages/home/home_page.dart';
 
@@ -14,7 +15,7 @@ class App extends StatelessWidget {
         primarySwatch: Colors.green,
         backgroundColor: Colors.blueGrey[600],
         scaffoldBackgroundColor: Colors.blueGrey[800],
-        shadowColor: Colors.black,
+        shadowColor: Colors.grey[900],
         cardColor: Colors.blueGrey,
         canvasColor: Colors.white12,
         errorColor: Colors.red,
@@ -22,11 +23,11 @@ class App extends StatelessWidget {
         iconTheme: const IconThemeData(
           color: Colors.white,
         ),
-        textTheme: const TextTheme(
-          bodyText1: TextStyle(color: Colors.white),
-          bodyText2: TextStyle(color: Colors.white),
-          headline1: TextStyle(color: Colors.white),
-          headline2: TextStyle(color: Colors.white),
+        textTheme: TextTheme(
+          bodyText1: GoogleFonts.lato(color: Colors.white),
+          bodyText2: GoogleFonts.lato(color: Colors.white),
+          headline1: GoogleFonts.lato(color: Colors.white),
+          headline2: GoogleFonts.lato(color: Colors.white),
         ),
       ),
       theme: ThemeData(
@@ -41,11 +42,11 @@ class App extends StatelessWidget {
         iconTheme: const IconThemeData(
           color: Colors.black,
         ),
-        textTheme: const TextTheme(
-          bodyText1: TextStyle(color: Colors.black),
-          bodyText2: TextStyle(color: Colors.black),
-          headline1: TextStyle(color: Colors.black),
-          headline2: TextStyle(color: Colors.white),
+        textTheme: TextTheme(
+          bodyText1: GoogleFonts.lato(color: Colors.black),
+          bodyText2: GoogleFonts.lato(color: Colors.black),
+          headline1: GoogleFonts.lato(color: Colors.black),
+          headline2: GoogleFonts.lato(color: Colors.white),
         ),
       ),
       home: const HomePage(),

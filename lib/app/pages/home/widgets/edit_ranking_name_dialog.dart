@@ -27,8 +27,16 @@ class _EditRankingNameDialogState extends State<EditRankingNameDialog> {
           return TextFormField(
             controller: _editRankingNameController,
             maxLength: 40,
+            style: TextStyle(
+              color: Theme.of(context).textTheme.bodyText1!.color,
+            ),
             decoration: InputDecoration(
-              contentPadding: const EdgeInsets.only(right: 20.0),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(15.0),
+              ),
+              labelStyle: TextStyle(
+                color: Theme.of(context).textTheme.bodyText1!.color,
+              ),
               errorText:
                   value.text.isEmpty ? 'Name should not stay empty!' : null,
               label: const Text('List Name'),

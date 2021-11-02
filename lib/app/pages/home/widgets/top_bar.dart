@@ -1,4 +1,10 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:rnkr/app/pages/home/widgets/capture_list.dart';
+import 'package:rnkr/app/pages/home/widgets/capture_dialog.dart';
+import 'package:rnkr/app/pages/home/widgets/rank_list.dart';
+import 'package:screenshot/screenshot.dart';
 
 import '../../../data/models/ranking_model.dart';
 import '../../../global/constants.dart';
@@ -39,6 +45,21 @@ class _TopBarState extends State<TopBar> {
     );
   }
 
+  final ScreenshotController screenshotController = ScreenshotController();
+
+  Future<dynamic> _showCaptureDialog(
+    BuildContext context,
+    RankingModel ranking,
+    Uint8List image,
+  ) {
+    return showDialog(
+      context: context,
+      builder: (_) {
+        return CaptureDialog(ranking: ranking, capturedImage: image);
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -59,7 +80,6 @@ class _TopBarState extends State<TopBar> {
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontSize: 22.0,
-                    fontWeight: FontWeight.bold,
                     color: Theme.of(context).textTheme.headline1!.color,
                   ),
                 ),
@@ -90,11 +110,20 @@ class _TopBarState extends State<TopBar> {
                 const SizedBox(width: (defaultPadding / 1.5)),
                 GestureDetector(
                   child: Icon(
-                    Icons.check,
+                    Icons.camera_alt_outlined,
                     size: 40.0,
                     color: Theme.of(context).iconTheme.color,
                   ),
-                  onTap: () {},
+                  onTap: () {
+                    screenshotController
+                        .captureFromWidget(
+                      CaptureList(ranking: widget.ranking),
+                      delay: const Duration(seconds: 1),
+                    )
+                        .then((image) async {
+                      _showCaptureDialog(context, widget.ranking, image);
+                    });
+                  },
                 ),
               ],
             ),

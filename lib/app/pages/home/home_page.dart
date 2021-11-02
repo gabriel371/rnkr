@@ -22,6 +22,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   RankingModel ranking = defaultRanking;
 
+  bool showItems = true;
+
   ValueNotifier<bool> isDialOpen = ValueNotifier(false);
 
   void _addItem(ItemModel item) => setState(() => ranking.items!.add(item));
@@ -132,7 +134,7 @@ class _HomePageState extends State<HomePage> {
         children: [
           SpeedDialChild(
             child: Icon(
-              Icons.close,
+              Icons.delete,
               color: Theme.of(context).iconTheme.color,
             ),
             label: 'Clear Content',
@@ -144,7 +146,7 @@ class _HomePageState extends State<HomePage> {
           ),
           SpeedDialChild(
             child: Icon(
-              Icons.menu,
+              Icons.playlist_add,
               color: Theme.of(context).iconTheme.color,
             ),
             label: 'Add Rank',
@@ -154,7 +156,7 @@ class _HomePageState extends State<HomePage> {
           ),
           SpeedDialChild(
             child: Icon(
-              Icons.adjust,
+              Icons.library_add,
               color: Theme.of(context).iconTheme.color,
             ),
             label: 'Add Item',
